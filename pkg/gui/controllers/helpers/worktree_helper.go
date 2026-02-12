@@ -112,8 +112,9 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 	}
 
 	self.c.Prompt(types.PromptOpts{
-		Title: self.c.Tr.NewWorktreePath,
-		HandleConfirm: func(path string) error {
+		Title:          self.c.Tr.NewWorktreePath,
+		InitialContent: self.c.UserConfig().Git.Worktree.CreatePathPrefix,
+		HandleConfirm:  func(path string) error {
 			opts.Path = path
 
 			if detached {
@@ -152,6 +153,33 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 	})
 
 	return nil
+}
+
+func looksLikeCommitHash(s string) bool {
+	if len(s) < 7 {
+		return false
+	}
+	for _, c := range s {
+		if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
+			return false
+		}
+	}
+	return true
+}
+
+func (self *WorktreeHelper) formatWorktreePath(base string) string {
+	if looksLikeCommitHash(base) {
+		return ""
+	}
+	switch self.c.UserConfig().Git.Worktree.CreatePathFormat {
+	case "replace":
+		return strings.ReplaceAll(base, "/", "-")
+	case "lastPart":
+		parts := strings.Split(base, "/")
+		return parts[len(parts)-1]
+	default: // "plain"
+		return base
+	}
 }
 
 func (self *WorktreeHelper) Switch(worktree *models.Worktree, contextKey types.ContextKey) error {

@@ -311,6 +311,8 @@ type GitConfig struct {
 	ParseEmoji bool `yaml:"parseEmoji"`
 	// Config for showing the log in the commits view
 	Log LogConfig `yaml:"log"`
+	// Config relating to worktrees
+	Worktree WorktreeConfig `yaml:"worktree"`
 	// How branches are sorted in the local branches view.
 	// One of: 'date' (default) | 'recency' | 'alphabetical'
 	// Can be changed from within Lazygit with the Sort Order menu (`s`) in the branches panel.
@@ -365,6 +367,11 @@ type MergingConfig struct {
 	Args string `yaml:"args" jsonschema:"example=--no-ff"`
 	// The commit message to use for a squash merge commit. Can contain "{{selectedRef}}" and "{{currentBranch}}" placeholders.
 	SquashMergeMessage string `yaml:"squashMergeMessage"`
+}
+
+type WorktreeConfig struct {
+	// Default path prefix to seed in the "New worktree path" prompt when creating a worktree.
+	CreatePathPrefix string `yaml:"createPathPrefix"`
 }
 
 type LogConfig struct {
@@ -837,6 +844,9 @@ func GetDefaultConfig() *UserConfig {
 				Order:          "topo-order",
 				ShowGraph:      "always",
 				ShowWholeGraph: false,
+			},
+			Worktree: WorktreeConfig{
+				CreatePathPrefix: "",
 			},
 			LocalBranchSortOrder:         "date",
 			RemoteBranchSortOrder:        "date",

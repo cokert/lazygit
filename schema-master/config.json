@@ -423,6 +423,10 @@
           "$ref": "#/$defs/LogConfig",
           "description": "Config for showing the log in the commits view"
         },
+        "worktree": {
+          "$ref": "#/$defs/WorktreeConfig",
+          "description": "Config relating to worktrees"
+        },
         "localBranchSortOrder": {
           "type": "string",
           "enum": [
@@ -2006,6 +2010,17 @@
       },
       "additionalProperties": false,
       "type": "object"
+    },
+    "WorktreeConfig": {
+      "properties": {
+        "createPathPrefix": {
+          "type": "string",
+          "description": "Default path prefix to seed in the \"New worktree path\" prompt when creating a worktree."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Config relating to worktrees"
     }
   }
 }
