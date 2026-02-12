@@ -465,6 +465,12 @@ git:
     # passing the `--all` argument to `git log`)
     showWholeGraph: false
 
+  # Config relating to worktrees
+  worktree:
+    # Default path prefix to seed in the "New worktree path" prompt when creating a
+    # worktree.
+    createPathPrefix: ""
+
   # How branches are sorted in the local branches view.
   # One of: 'date' (default) | 'recency' | 'alphabetical'
   # Can be changed from within Lazygit with the Sort Order menu (`s`) in the
