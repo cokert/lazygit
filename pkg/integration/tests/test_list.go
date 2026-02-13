@@ -171,6 +171,7 @@ var tests = []*components.IntegrationTest{
 	custom_commands.AccessCommitProperties,
 	custom_commands.BasicCommand,
 	custom_commands.CheckForConflicts,
+	custom_commands.ConfigWorktreePrefix,
 	custom_commands.CustomCommandsSubmenu,
 	custom_commands.CustomCommandsSubmenuWithSpecialKeybindings,
 	custom_commands.FormPrompts,

@@ -104,3 +104,17 @@ type Worktree struct {
 	Branch        string
 	Name          string
 }
+
+// Config shim exposes a minimal, stable subset of user config to custom command templates.
+// Only fields that are useful in custom commands are included.
+type Config struct {
+	Git GitConfigShim
+}
+
+type GitConfigShim struct {
+	Worktree WorktreeConfigShim
+}
+
+type WorktreeConfigShim struct {
+	CreatePathPrefix string
+}

@@ -337,6 +337,22 @@ SelectedStashEntry
 SelectedCommitFile
 SelectedWorktree
 CheckedOutBranch
+Config
+```
+
+`Config` exposes a minimal subset of user config for use in templates. For example, `{{.Config.Git.Worktree.CreatePathPrefix}}` is the worktree path prefix from `git.worktree.createPathPrefix`, useful when building `git worktree add` commands so the path matches your configured prefix. Example: create a worktree and branch with the same name, using your configured path prefix:
+
+```yml
+customCommands:
+  - key: "W"
+    context: "localBranches"
+    description: "Create worktree and branch (same name)"
+    loadingText: "Creating worktree"
+    prompts:
+      - type: "input"
+        title: "New branch/worktree name"
+        key: "Name"
+    command: "git worktree add -b {{.Form.Name | quote}} {{ printf \"%s%s\" .Config.Git.Worktree.CreatePathPrefix .Form.Name | quote }} {{.SelectedLocalBranch.Name | quote}}"
 ```
 
 (For legacy reasons, `SelectedLocalCommit`, `SelectedReflogCommit`, and `SelectedSubCommit` are also available, but they are deprecated.)
