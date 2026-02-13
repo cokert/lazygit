@@ -240,13 +240,22 @@ type CustomCommandObjects struct {
 	*SessionState
 	PromptResponses []string
 	Form            map[string]string
+	Config          *Config
 }
 
 func (self *HandlerCreator) getResolveTemplateFn(form map[string]string, promptResponses []string, sessionState *SessionState) func(string) (string, error) {
+	uc := self.c.UserConfig()
 	objects := CustomCommandObjects{
 		SessionState:    sessionState,
 		PromptResponses: promptResponses,
 		Form:            form,
+		Config: &Config{
+			Git: GitConfigShim{
+				Worktree: WorktreeConfigShim{
+					CreatePathPrefix: uc.Git.Worktree.CreatePathPrefix,
+				},
+			},
+		},
 	}
 
 	funcs := template.FuncMap{
