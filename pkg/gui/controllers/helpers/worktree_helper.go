@@ -111,8 +111,14 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 		})
 	}
 
+	pathBase := base
+	if local := self.deriveLocalBranchNameFromRemote(base); local != "" {
+		pathBase = local
+	}
+
 	self.c.Prompt(types.PromptOpts{
-		Title: self.c.Tr.NewWorktreePath,
+		Title:          self.c.Tr.NewWorktreePath,
+		InitialContent: pathBase,
 		HandleConfirm: func(path string) error {
 			opts.Path = path
 
@@ -121,10 +127,12 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 			}
 
 			if canCheckoutBase {
+				defaultBranch := self.deriveLocalBranchNameFromRemote(base)
 				title := utils.ResolvePlaceholderString(self.c.Tr.NewBranchNameLeaveBlank, map[string]string{"default": base})
 				// prompt for the new branch name where a blank means we just check out the branch
 				self.c.Prompt(types.PromptOpts{
-					Title: title,
+					Title:          title,
+					InitialContent: defaultBranch,
 					HandleConfirm: func(branchName string) error {
 						opts.Branch = branchName
 
@@ -137,8 +145,10 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 			}
 
 			// prompt for the new branch name
+			defaultBranch := self.deriveLocalBranchNameFromRemote(base)
 			self.c.Prompt(types.PromptOpts{
-				Title: self.c.Tr.NewBranchName,
+				Title:          self.c.Tr.NewBranchName,
+				InitialContent: defaultBranch,
 				HandleConfirm: func(branchName string) error {
 					opts.Branch = branchName
 
@@ -152,6 +162,17 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 	})
 
 	return nil
+}
+
+// deriveLocalBranchNameFromRemote checks if base is a remote tracking ref (e.g. "origin/branch1")
+// and returns the local part (e.g. "branch1"). Returns "" if base is not a remote ref.
+func (self *WorktreeHelper) deriveLocalBranchNameFromRemote(base string) string {
+	for _, remote := range self.c.Model().Remotes {
+		if strings.HasPrefix(base, remote.Name+"/") {
+			return base[len(remote.Name)+1:]
+		}
+	}
+	return ""
 }
 
 func (self *WorktreeHelper) Switch(worktree *models.Worktree, contextKey types.ContextKey) error {

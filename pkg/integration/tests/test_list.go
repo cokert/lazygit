@@ -473,6 +473,7 @@ var tests = []*components.IntegrationTest{
 	worktree.ForceRemoveWorktreeWithSubmodules,
 	worktree.RemoveWorktreeFromBranch,
 	worktree.ResetWindowTabs,
+	worktree.StripRemotePrefix,
 	worktree.SymlinkIntoRepoSubdir,
 	worktree.WorktreeInRepo,
 }
