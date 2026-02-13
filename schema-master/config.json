@@ -2016,6 +2016,16 @@
         "createPathPrefix": {
           "type": "string",
           "description": "Default path prefix to seed in the \"New worktree path\" prompt when creating a worktree."
+        },
+        "createPathFormat": {
+          "type": "string",
+          "enum": [
+            "plain",
+            "replace",
+            "lastPart"
+          ],
+          "description": "How to transform the base ref name when seeding the \"New worktree path\" prompt.\nOne of 'plain' (use branch name as-is) | 'replace' (replace slashes with dashes) | 'lastPart' (use the part after the last slash)",
+          "default": "plain"
         }
       },
       "additionalProperties": false,

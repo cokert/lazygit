@@ -372,6 +372,9 @@ type MergingConfig struct {
 type WorktreeConfig struct {
 	// Default path prefix to seed in the "New worktree path" prompt when creating a worktree.
 	CreatePathPrefix string `yaml:"createPathPrefix"`
+	// How to transform the base ref name when seeding the "New worktree path" prompt.
+	// One of 'plain' (use branch name as-is) | 'replace' (replace slashes with dashes) | 'lastPart' (use the part after the last slash)
+	CreatePathFormat string `yaml:"createPathFormat" jsonschema:"enum=plain,enum=replace,enum=lastPart"`
 }
 
 type LogConfig struct {
@@ -847,6 +850,7 @@ func GetDefaultConfig() *UserConfig {
 			},
 			Worktree: WorktreeConfig{
 				CreatePathPrefix: "",
+				CreatePathFormat: "plain",
 			},
 			LocalBranchSortOrder:         "date",
 			RemoteBranchSortOrder:        "date",

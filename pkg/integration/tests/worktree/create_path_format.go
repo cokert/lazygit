@@ -5,15 +5,16 @@ import (
 	. "github.com/jesseduffield/lazygit/pkg/integration/components"
 )
 
-var CreatePathPrefix = NewIntegrationTest(NewIntegrationTestArgs{
-	Description:  "Verify that the createPathPrefix config seeds the worktree path prompt",
+var CreatePathFormat = NewIntegrationTest(NewIntegrationTestArgs{
+	Description:  "Verify that the createPathFormat config transforms the branch name in the worktree path prompt",
 	ExtraCmdArgs: []string{},
 	Skip:         false,
 	SetupConfig: func(cfg *config.AppConfig) {
 		cfg.GetUserConfig().Git.Worktree.CreatePathPrefix = "../"
+		cfg.GetUserConfig().Git.Worktree.CreatePathFormat = "replace"
 	},
 	SetupRepo: func(shell *Shell) {
-		shell.NewBranch("mybranch")
+		shell.NewBranch("feature/my-thing")
 		shell.CreateFileAndAdd("README.md", "hello world")
 		shell.Commit("initial commit")
 	},
@@ -29,23 +30,23 @@ var CreatePathPrefix = NewIntegrationTest(NewIntegrationTestArgs{
 
 				t.ExpectPopup().Prompt().
 					Title(Equals("New worktree base ref")).
-					InitialText(Equals("mybranch")).
+					InitialText(Equals("feature/my-thing")).
 					Confirm()
 
 				t.ExpectPopup().Prompt().
 					Title(Equals("New worktree path")).
-					InitialText(Equals("../mybranch")).
+					InitialText(Equals("../feature-my-thing")).
 					Clear().
-					Type("../linked-worktree").
+					Type("../my-worktree").
 					Confirm()
 
 				t.ExpectPopup().Prompt().
-					Title(Equals("New branch name (leave blank to checkout mybranch)")).
+					Title(Equals("New branch name (leave blank to checkout feature/my-thing)")).
 					Type("newbranch").
 					Confirm()
 			}).
 			Lines(
-				Contains("linked-worktree").IsSelected(),
+				Contains("my-worktree").IsSelected(),
 				Contains("repo (main)"),
 			)
 	},
