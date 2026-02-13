@@ -177,6 +177,7 @@ var tests = []*components.IntegrationTest{
 	custom_commands.ConditionalPromptFalseString,
 	custom_commands.ConditionalPromptFalseValue,
 	custom_commands.ConditionalPrompts,
+	custom_commands.ConfigWorktreePrefix,
 	custom_commands.CustomCommandsSubmenu,
 	custom_commands.CustomCommandsSubmenuWithSpecialKeybindings,
 	custom_commands.FormPrompts,
