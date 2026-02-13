@@ -471,6 +471,12 @@ git:
     # worktree.
     createPathPrefix: ""
 
+    # How to transform the base ref name when seeding the "New worktree path"
+    # prompt.
+    # One of 'plain' (use branch name as-is) | 'replace' (replace slashes with
+    # dashes) | 'lastPart' (use the part after the last slash)
+    createPathFormat: plain
+
   # How branches are sorted in the local branches view.
   # One of: 'date' (default) | 'recency' | 'alphabetical'
   # Can be changed from within Lazygit with the Sort Order menu (`s`) in the

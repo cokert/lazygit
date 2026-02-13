@@ -473,6 +473,7 @@ var tests = []*components.IntegrationTest{
 	worktree.AssociateBranchRebase,
 	worktree.BareRepo,
 	worktree.BareRepoWorktreeConfig,
+	worktree.CreatePathFormat,
 	worktree.CreatePathPrefix,
 	worktree.Crud,
 	worktree.CustomCommand,
