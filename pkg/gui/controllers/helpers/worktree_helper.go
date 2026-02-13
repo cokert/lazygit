@@ -113,7 +113,7 @@ func (self *WorktreeHelper) NewWorktreeCheckout(base string, canCheckoutBase boo
 
 	self.c.Prompt(types.PromptOpts{
 		Title:          self.c.Tr.NewWorktreePath,
-		InitialContent: self.c.UserConfig().Git.Worktree.CreatePathPrefix,
+		InitialContent: self.c.UserConfig().Git.Worktree.CreatePathPrefix + self.formatWorktreePath(base),
 		HandleConfirm:  func(path string) error {
 			opts.Path = path
 
@@ -171,6 +171,7 @@ func (self *WorktreeHelper) formatWorktreePath(base string) string {
 	if looksLikeCommitHash(base) {
 		return ""
 	}
+
 	switch self.c.UserConfig().Git.Worktree.CreatePathFormat {
 	case "replace":
 		return strings.ReplaceAll(base, "/", "-")
