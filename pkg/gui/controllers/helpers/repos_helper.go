@@ -144,39 +144,47 @@ func (self *ReposHelper) DispatchSwitchToRepo(path string, contextKey types.Cont
 	return self.DispatchSwitchTo(path, self.c.Tr.ErrRepositoryMovedOrDeleted, contextKey)
 }
 
+// DispatchSwitchTo wraps SwitchTo with a "Switching..." waiting status.
+// Use this when not already inside a WithWaitingStatus context.
 func (self *ReposHelper) DispatchSwitchTo(path string, errMsg string, contextKey types.ContextKey) error {
 	return self.c.WithWaitingStatus(self.c.Tr.Switching, func(gocui.Task) error {
-		env.UnsetGitLocationEnvVars()
-		originalPath, err := os.Getwd()
-		if err != nil {
-			return nil
-		}
-
-		msg := utils.ResolvePlaceholderString(self.c.Tr.ChangingDirectoryTo, map[string]string{"path": path})
-		self.c.LogCommand(msg, false)
-
-		if err := os.Chdir(path); err != nil {
-			if os.IsNotExist(err) {
-				return errors.New(errMsg)
-			}
-			return err
-		}
-
-		if err := commands.VerifyInGitRepo(self.c.OS()); err != nil {
-			if err := os.Chdir(originalPath); err != nil {
-				return err
-			}
-
-			return err
-		}
-
-		if err := self.recordDirectoryHelper.RecordCurrentDirectory(); err != nil {
-			return err
-		}
-
-		self.c.Mutexes().RefreshingFilesMutex.Lock()
-		defer self.c.Mutexes().RefreshingFilesMutex.Unlock()
-
-		return self.onNewRepo(appTypes.StartArgs{}, contextKey)
+		return self.SwitchTo(path, errMsg, contextKey)
 	})
+}
+
+// SwitchTo performs the actual directory switch and repo reinit.
+// Can be called from within an existing WithWaitingStatus context.
+func (self *ReposHelper) SwitchTo(path string, errMsg string, contextKey types.ContextKey) error {
+	env.UnsetGitLocationEnvVars()
+	originalPath, err := os.Getwd()
+	if err != nil {
+		return nil
+	}
+
+	msg := utils.ResolvePlaceholderString(self.c.Tr.ChangingDirectoryTo, map[string]string{"path": path})
+	self.c.LogCommand(msg, false)
+
+	if err := os.Chdir(path); err != nil {
+		if os.IsNotExist(err) {
+			return errors.New(errMsg)
+		}
+		return err
+	}
+
+	if err := commands.VerifyInGitRepo(self.c.OS()); err != nil {
+		if err := os.Chdir(originalPath); err != nil {
+			return err
+		}
+
+		return err
+	}
+
+	if err := self.recordDirectoryHelper.RecordCurrentDirectory(); err != nil {
+		return err
+	}
+
+	self.c.Mutexes().RefreshingFilesMutex.Lock()
+	defer self.c.Mutexes().RefreshingFilesMutex.Unlock()
+
+	return self.onNewRepo(appTypes.StartArgs{}, contextKey)
 }
