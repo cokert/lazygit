@@ -659,6 +659,9 @@ type OSConfig struct {
 
 type CustomCommandAfterHook struct {
 	CheckForConflicts bool `yaml:"checkForConflicts"`
+	// Switch to the worktree at the given path after the command completes.
+	// Supports Go template syntax (e.g. '{{ printf "%s%s" .Config.Git.Worktree.CreatePathPrefix .Form.Name }}')
+	SwitchToWorktree string `yaml:"switchToWorktree"`
 }
 
 type CustomCommand struct {
