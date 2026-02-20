@@ -141,6 +141,10 @@
       "properties": {
         "checkForConflicts": {
           "type": "boolean"
+        },
+        "switchToWorktree": {
+          "type": "string",
+          "description": "Switch to the worktree at the given path after the command completes.\nSupports Go template syntax (e.g. '{{ printf \"%s%s\" .Config.Git.Worktree.CreatePathPrefix .Form.Name }}')"
         }
       },
       "additionalProperties": false,
