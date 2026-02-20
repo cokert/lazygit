@@ -189,6 +189,7 @@ var tests = []*components.IntegrationTest{
 	custom_commands.ShowOutputInPanel,
 	custom_commands.SuggestionsCommand,
 	custom_commands.SuggestionsPreset,
+	custom_commands.SwitchToWorktree,
 	demo.AmendOldCommit,
 	demo.Bisect,
 	demo.CherryPick,

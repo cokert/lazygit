@@ -64,6 +64,23 @@ Here are the options for the `after` key:
 | _field_ | _description_ | required |
 |-----------------|----------------------|-|
 | checkForConflicts | true/false. If true, check for merge conflicts | no |
+| switchToWorktree | Path of a worktree to switch to after the command completes. Supports Go template syntax (e.g. `../{{.Form.Name}}`). | no |
+
+Here's an example of creating a worktree and automatically switching to it:
+
+```yml
+customCommands:
+  - key: 'W'
+    context: 'localBranches'
+    description: 'Create worktree from branch and switch to it'
+    prompts:
+      - type: 'input'
+        title: 'New branch/worktree name'
+        key: 'Name'
+    command: 'git worktree add -b {{.Form.Name}} ../{{.Form.Name}} {{.SelectedLocalBranch.Name | quote}}'
+    after:
+      switchToWorktree: '../{{.Form.Name}}'
+```
 
 ## Contexts
 

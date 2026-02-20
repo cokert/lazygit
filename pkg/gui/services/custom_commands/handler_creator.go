@@ -8,6 +8,7 @@ import (
 
 	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/config"
+	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/gui/controllers/helpers"
 	"github.com/jesseduffield/lazygit/pkg/gui/keybindings"
 	"github.com/jesseduffield/lazygit/pkg/gui/style"
@@ -24,6 +25,7 @@ type HandlerCreator struct {
 	menuGenerator        *MenuGenerator
 	suggestionsHelper    *helpers.SuggestionsHelper
 	mergeAndRebaseHelper *helpers.MergeAndRebaseHelper
+	reposHelper          *helpers.ReposHelper
 }
 
 func NewHandlerCreator(
@@ -31,6 +33,7 @@ func NewHandlerCreator(
 	sessionStateLoader *SessionStateLoader,
 	suggestionsHelper *helpers.SuggestionsHelper,
 	mergeAndRebaseHelper *helpers.MergeAndRebaseHelper,
+	reposHelper *helpers.ReposHelper,
 ) *HandlerCreator {
 	resolver := NewResolver(c.Common)
 	menuGenerator := NewMenuGenerator(c.Common)
@@ -42,6 +45,7 @@ func NewHandlerCreator(
 		menuGenerator:        menuGenerator,
 		suggestionsHelper:    suggestionsHelper,
 		mergeAndRebaseHelper: mergeAndRebaseHelper,
+		reposHelper:          reposHelper,
 	}
 }
 
@@ -276,7 +280,19 @@ func (self *HandlerCreator) finalHandler(customCommand config.CustomCommand, ses
 	cmdObj := self.c.OS().Cmd.NewShell(cmdStr, self.c.UserConfig().OS.ShellFunctionsFile)
 
 	if customCommand.Output == "terminal" {
-		return self.c.RunSubprocessAndRefresh(cmdObj)
+		_, err := self.c.RunSubprocess(cmdObj)
+		if err != nil {
+			return err
+		}
+		if customCommand.After != nil && customCommand.After.SwitchToWorktree != "" {
+			resolvedPath, err := resolveTemplate(customCommand.After.SwitchToWorktree)
+			if err != nil {
+				return err
+			}
+			return self.reposHelper.DispatchSwitchTo(resolvedPath, self.c.Tr.ErrWorktreeMovedOrRemoved, context.NO_CONTEXT)
+		}
+		self.c.Refresh(types.RefreshOptions{Mode: types.ASYNC})
+		return nil
 	}
 
 	loadingText := customCommand.LoadingText
@@ -318,6 +334,14 @@ func (self *HandlerCreator) finalHandler(customCommand config.CustomCommand, ses
 				}
 			}
 			self.c.Alert(title, output)
+		}
+
+		if customCommand.After != nil && customCommand.After.SwitchToWorktree != "" {
+			resolvedPath, err := resolveTemplate(customCommand.After.SwitchToWorktree)
+			if err != nil {
+				return err
+			}
+			return self.reposHelper.SwitchTo(resolvedPath, self.c.Tr.ErrWorktreeMovedOrRemoved, context.NO_CONTEXT)
 		}
 
 		return nil
