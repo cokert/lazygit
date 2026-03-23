@@ -19,7 +19,16 @@ func GetWorktreeDisplayStrings(tr *i18n.TranslationSet, worktrees []*models.Work
 }
 
 func GetWorktreeDisplayString(tr *i18n.TranslationSet, worktree *models.Worktree) []string {
+	// Use the branch color pattern if one matches, otherwise fall back to cyan
+	// (the default branch column color) rather than the plain default text color.
+	branchStyle := style.FgCyan
 	textStyle := theme.DefaultTextColor
+	if worktree.Branch != "" {
+		if branchTextStyle, ok := colorPatterns.match(worktree.Branch); ok {
+			textStyle = *branchTextStyle
+			branchStyle = *branchTextStyle
+		}
+	}
 
 	current := ""
 	currentColor := style.FgCyan
@@ -47,7 +56,7 @@ func GetWorktreeDisplayString(tr *i18n.TranslationSet, worktree *models.Worktree
 	res = append(res, textStyle.Sprint(name))
 	var branch string
 	if worktree.Branch != "" {
-		branch = style.FgCyan.Sprint(worktree.Branch)
+		branch = branchStyle.Sprint(worktree.Branch)
 	} else if worktree.Head != "" {
 		branch = style.FgYellow.Sprint("HEAD detached at " + utils.ShortHash(worktree.Head))
 	}
