@@ -36,8 +36,9 @@ func FormatStatus(
 	}
 
 	name := GetBranchTextStyle(currentBranch.Name).Sprint(currentBranch.Name)
-	// If the user is in a linked worktree (i.e. not the main worktree) we'll display that
-	if linkedWorktreeName != "" {
+	// If the user is in a linked worktree (i.e. not the main worktree) we'll display that,
+	// but skip it if the worktree name matches the branch name (redundant)
+	if linkedWorktreeName != "" && linkedWorktreeName != currentBranch.Name {
 		icon := ""
 		if icons.IsIconEnabled() {
 			icon = icons.LINKED_WORKTREE_ICON + " "
