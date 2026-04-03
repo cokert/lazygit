@@ -375,6 +375,10 @@ type WorktreeConfig struct {
 	// How to transform the base ref name when seeding the "New worktree path" prompt.
 	// One of 'plain' (use branch name as-is) | 'replace' (replace slashes with dashes) | 'lastPart' (use the part after the last slash)
 	CreatePathFormat string `yaml:"createPathFormat" jsonschema:"enum=plain,enum=replace,enum=lastPart"`
+	// Path to a file whose contents identify the "current runtree" worktree.
+	// Relative paths are resolved from the current working directory (worktree path).
+	// The matching worktree is marked with '+' in the worktrees view.
+	RuntreeFilePath string `yaml:"runtreeFilePath"`
 }
 
 type LogConfig struct {
@@ -855,6 +859,7 @@ func GetDefaultConfig() *UserConfig {
 			Worktree: WorktreeConfig{
 				CreatePathPrefix: "",
 				CreatePathFormat: "plain",
+				RuntreeFilePath:  "",
 			},
 			LocalBranchSortOrder:         "date",
 			RemoteBranchSortOrder:        "date",

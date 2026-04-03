@@ -98,6 +98,7 @@ type CommitFile struct {
 type Worktree struct {
 	IsMain        bool
 	IsCurrent     bool
+	IsRuntree     bool
 	Path          string
 	IsPathMissing bool
 	GitDir        string

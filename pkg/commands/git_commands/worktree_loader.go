@@ -140,7 +140,49 @@ func (self *WorktreeLoader) GetWorktrees() ([]*models.Worktree, error) {
 		}
 	}
 
+	worktrees = self.markRuntree(worktrees)
+
 	return worktrees, nil
+}
+
+func (self *WorktreeLoader) markRuntree(worktrees []*models.Worktree) []*models.Worktree {
+	runtreeFilePath := self.UserConfig().Git.Worktree.RuntreeFilePath
+	if runtreeFilePath == "" {
+		return worktrees
+	}
+
+	if !filepath.IsAbs(runtreeFilePath) {
+		runtreeFilePath = filepath.Join(self.repoPaths.WorktreePath(), runtreeFilePath)
+	}
+
+	content, err := afero.ReadFile(self.Fs, runtreeFilePath)
+	if err != nil {
+		self.Log.Debugf("Could not read runtree file %s: %v", runtreeFilePath, err)
+		return worktrees
+	}
+
+	runtreeName := strings.TrimSpace(string(content))
+	if runtreeName == "" {
+		return worktrees
+	}
+
+	runtreeIdx := -1
+	for i, wt := range worktrees {
+		if wt.Name == runtreeName || wt.Branch == runtreeName {
+			wt.IsRuntree = true
+			runtreeIdx = i
+			break
+		}
+	}
+
+	// Move runtree to position 1 (just after current worktree), unless it's already at 0 or 1
+	if runtreeIdx > 1 {
+		wt := worktrees[runtreeIdx]
+		worktrees = append(worktrees[:runtreeIdx], worktrees[runtreeIdx+1:]...)
+		worktrees = append(worktrees[:1], append([]*models.Worktree{wt}, worktrees[1:]...)...)
+	}
+
+	return worktrees
 }
 
 func (self *WorktreeLoader) pathExists(path string) bool {

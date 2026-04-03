@@ -17,6 +17,7 @@ func FormatStatus(
 	currentBranch *models.Branch,
 	itemOperation types.ItemOperation,
 	linkedWorktreeName string,
+	runtreeName string,
 	workingTreeState models.WorkingTreeState,
 	tr *i18n.TranslationSet,
 	userConfig *config.UserConfig,
@@ -44,6 +45,10 @@ func FormatStatus(
 		repoName = fmt.Sprintf("%s(%s%s)", repoName, icon, style.FgCyan.Sprint(linkedWorktreeName))
 	}
 	status += fmt.Sprintf("%s → %s", repoName, name)
+
+	if runtreeName != "" {
+		status += fmt.Sprintf(" [🎄 %s]", style.FgYellow.Sprint(runtreeName))
+	}
 
 	return status
 }

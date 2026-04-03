@@ -2034,6 +2034,10 @@
           ],
           "description": "How to transform the base ref name when seeding the \"New worktree path\" prompt.\nOne of 'plain' (use branch name as-is) | 'replace' (replace slashes with dashes) | 'lastPart' (use the part after the last slash)",
           "default": "plain"
+        },
+        "runtreeFilePath": {
+          "type": "string",
+          "description": "Path to a file whose contents identify the \"current runtree\" worktree.\nRelative paths are resolved from the current working directory (worktree path).\nThe matching worktree is marked with '+' in the worktrees view."
         }
       },
       "additionalProperties": false,

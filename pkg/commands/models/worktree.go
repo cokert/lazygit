@@ -6,6 +6,8 @@ type Worktree struct {
 	IsMain bool
 	// if true, this is the worktree that is currently checked out
 	IsCurrent bool
+	// if true, this worktree matches the external "current runtree" file
+	IsRuntree bool
 	// path to the directory of the worktree i.e. the directory that contains all the user's files
 	Path string
 	// if true, the path is not found
