@@ -48,7 +48,11 @@ func FormatStatus(
 	status += fmt.Sprintf("%s → %s", repoName, name)
 
 	if runtreeName != "" {
-		status += fmt.Sprintf(" [🎄 %s]", style.FgYellow.Sprint(runtreeName))
+		if runtreeName == currentBranch.Name {
+			status += " [🎄]"
+		} else {
+			status += fmt.Sprintf(" [🎄 %s]", style.FgYellow.Sprint(runtreeName))
+		}
 	}
 
 	return status
