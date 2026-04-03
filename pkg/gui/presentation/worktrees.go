@@ -35,6 +35,9 @@ func GetWorktreeDisplayString(tr *i18n.TranslationSet, worktree *models.Worktree
 	if worktree.IsCurrent {
 		current = "  *"
 		currentColor = style.FgGreen
+	} else if worktree.IsRuntree {
+		current = "  +"
+		currentColor = style.FgYellow
 	}
 
 	icon := icons.IconForWorktree(false)
