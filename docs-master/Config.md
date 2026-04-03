@@ -494,6 +494,11 @@ git:
     # dashes) | 'lastPart' (use the part after the last slash)
     createPathFormat: plain
 
+    # Path to a file whose contents identify the "current runtree" worktree.
+    # Relative paths are resolved from the current working directory (worktree
+    # path). The matching worktree is marked with '+' in the worktrees view.
+    runtreeFilePath: ""
+
   # How branches are sorted in the local branches view.
   # One of: 'date' (default) | 'recency' | 'alphabetical'
   # Can be changed from within Lazygit with the Sort Order menu (`s`) in the

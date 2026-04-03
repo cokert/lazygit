@@ -756,9 +756,17 @@ func (self *RefreshHelper) refreshStatus() {
 	workingTreeState := self.c.Git().Status.WorkingTreeState()
 	linkedWorktreeName := self.worktreeHelper.GetLinkedWorktreeName()
 
+	runtreeName := ""
+	for _, wt := range self.c.Model().Worktrees {
+		if wt.IsRuntree {
+			runtreeName = wt.Name
+			break
+		}
+	}
+
 	repoName := self.c.Git().RepoPaths.RepoName()
 
-	status := presentation.FormatStatus(repoName, currentBranch, types.ItemOperationNone, linkedWorktreeName, workingTreeState, self.c.Tr, self.c.UserConfig())
+	status := presentation.FormatStatus(repoName, currentBranch, types.ItemOperationNone, linkedWorktreeName, runtreeName, workingTreeState, self.c.Tr, self.c.UserConfig())
 
 	self.c.SetViewContent(self.c.Views().Status, status)
 }

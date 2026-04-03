@@ -166,6 +166,7 @@ func worktreeShimFromModelRemote(worktree *models.Worktree) *Worktree {
 	return &Worktree{
 		IsMain:        worktree.IsMain,
 		IsCurrent:     worktree.IsCurrent,
+		IsRuntree:     worktree.IsRuntree,
 		Path:          worktree.Path,
 		IsPathMissing: worktree.IsPathMissing,
 		GitDir:        worktree.GitDir,
