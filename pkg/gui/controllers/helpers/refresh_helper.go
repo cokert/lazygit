@@ -508,6 +508,21 @@ func (self *RefreshHelper) refreshBranches(refreshWorktrees bool, keepBranchSele
 		self.c.Log.Error(err)
 	}
 
+	if loadBehindCounts && self.c.UserConfig().Gui.ShowPullRequests {
+		self.c.OnWorker(func(_ gocui.Task) error {
+			return self.c.Git().Loaders.PullRequestLoader.SetPullRequestInfoOnBranches(
+				branches,
+				func() {
+					self.c.OnUIThread(func() error {
+						self.c.Contexts().Branches.HandleRender()
+						self.c.Contexts().Worktrees.HandleRenderToMain()
+						return nil
+					})
+				},
+			)
+		})
+	}
+
 	prevSelectedBranch := self.c.Contexts().Branches.GetSelected()
 
 	self.c.Model().Branches = branches

@@ -40,6 +40,12 @@ type Branch struct {
 	// determined yet, or up to date with base branch. (We don't need to
 	// distinguish the two, as we don't draw anything in both cases.)
 	BehindBaseBranch atomic.Int32
+
+	// Pull request info populated async via `gh` CLI.
+	// Empty means not yet loaded or no PR exists.
+	PullRequestNumber atomic.Int32
+	PullRequestState  atomic.Value // stores string: "OPEN", "MERGED", "CLOSED", or ""
+	PullRequestURL    atomic.Value // stores string
 }
 
 func (b *Branch) FullRefName() string {
