@@ -895,6 +895,9 @@ type TranslationSet struct {
 	Name                                     string
 	Branch                                   string
 	Path                                     string
+	OpenWorktreePullRequest                  string
+	NoPullRequestForBranch                   string
+	PullRequestLabel                         string
 	MarkedBaseCommitStatus                   string
 	MarkAsBaseCommit                         string
 	MarkAsBaseCommitTooltip                  string
@@ -2017,6 +2020,9 @@ func EnglishTranslationSet() *TranslationSet {
 		Name:                                     "Name",
 		Branch:                                   "Branch",
 		Path:                                     "Path",
+		OpenWorktreePullRequest:                  "Open pull request in browser",
+		NoPullRequestForBranch:                   "No pull request found for this branch",
+		PullRequestLabel:                         "Pull Request",
 		MarkedBaseCommitStatus:                   "Marked a base commit for rebase",
 		MarkAsBaseCommit:                         "Mark as base commit for rebase",
 		MarkAsBaseCommitTooltip:                  "Select a base commit for the next rebase. When you rebase onto a branch, only commits above the base commit will be brought across. This uses the `git rebase --onto` command.",

@@ -131,6 +131,11 @@ func getBranchDisplayStrings(
 		coloredName = fmt.Sprintf("%s %s", coloredName, branchStatus)
 	}
 
+	prBadge := pullRequestBadge(b)
+	if len(prBadge) > 0 {
+		coloredName = fmt.Sprintf("%s %s", coloredName, prBadge)
+	}
+
 	recencyColor := style.FgCyan
 	if b.Recency == "  *" {
 		recencyColor = style.FgGreen
@@ -262,6 +267,27 @@ func divergenceStr(
 	}
 
 	return result
+}
+
+func pullRequestBadge(b *models.Branch) string {
+	prNum := b.PullRequestNumber.Load()
+	if prNum == 0 {
+		return ""
+	}
+
+	stateVal := b.PullRequestState.Load()
+	state, _ := stateVal.(string)
+
+	label := fmt.Sprintf("#%d", prNum)
+
+	switch state {
+	case "MERGED":
+		return style.FgMagenta.Sprint(label)
+	case "CLOSED":
+		return style.FgRed.Sprint(label)
+	default:
+		return style.FgGreen.Sprint(label)
+	}
 }
 
 func SetCustomBranches(customBranchColors map[string]string, isRegex bool) {
