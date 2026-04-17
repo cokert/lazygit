@@ -54,7 +54,7 @@ func (self *PullRequestLoader) buildGraphQLQuery(branchNames []string) string {
 	sb.WriteString("query($owner: String!, $repo: String!) {")
 	for i, name := range branchNames {
 		fmt.Fprintf(&sb,
-			` %s: repository(owner: $owner, name: $repo) { pullRequests(headRefName: "%s", first: 1, orderBy: {field: CREATED_AT, direction: DESC}) { nodes { number url state headRefName } } }`,
+			` %s: repository(owner: $owner, name: $repo) { pullRequests(headRefName: "%s", states: [OPEN, MERGED], first: 1, orderBy: {field: CREATED_AT, direction: DESC}) { nodes { number url state headRefName } } }`,
 			branchAlias(i), escapeGraphQLString(name))
 	}
 	sb.WriteString(" }")
@@ -190,9 +190,6 @@ func (self *PullRequestLoader) SetPullRequestInfoOnBranches(
 		}
 
 		for _, pr := range prs {
-			if pr.State == "CLOSED" {
-				continue
-			}
 			existing, exists := prByBranch[pr.HeadRefName]
 			if !exists || prPriority(pr.State) > prPriority(existing.State) {
 				prByBranch[pr.HeadRefName] = pr
@@ -205,6 +202,10 @@ func (self *PullRequestLoader) SetPullRequestInfoOnBranches(
 			branch.PullRequestNumber.Store(int32(pr.Number))
 			branch.PullRequestState.Store(pr.State)
 			branch.PullRequestURL.Store(pr.URL)
+		} else {
+			branch.PullRequestNumber.Store(0)
+			branch.PullRequestState.Store("")
+			branch.PullRequestURL.Store("")
 		}
 	}
 
@@ -216,10 +217,8 @@ func (self *PullRequestLoader) SetPullRequestInfoOnBranches(
 func prPriority(state string) int {
 	switch state {
 	case "OPEN":
-		return 3
-	case "MERGED":
 		return 2
-	case "CLOSED":
+	case "MERGED":
 		return 1
 	default:
 		return 0
