@@ -11,7 +11,6 @@ import (
 	"github.com/jesseduffield/lazygit/pkg/gui/style"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
 	"github.com/jesseduffield/lazygit/pkg/utils"
-	"github.com/samber/lo"
 )
 
 type WorktreesController struct {
@@ -157,60 +156,42 @@ func (self *WorktreesController) open(worktree *models.Worktree) error {
 	return self.c.Helpers().Files.OpenDirInEditor(worktree.Path)
 }
 
-func (self *WorktreesController) findBranchForWorktree(worktree *models.Worktree) (*models.Branch, bool) {
+func (self *WorktreesController) findPRForWorktree(worktree *models.Worktree) (*models.GithubPullRequest, bool) {
 	if worktree.Branch == "" {
 		return nil, false
 	}
-	return lo.Find(self.c.Model().Branches, func(b *models.Branch) bool {
-		return b.Name == worktree.Branch
-	})
+	pr, ok := self.c.Model().PullRequestsMap[worktree.Branch]
+	return pr, ok
 }
 
 func (self *WorktreesController) pullRequestLine(worktree *models.Worktree) string {
-	branch, found := self.findBranchForWorktree(worktree)
+	pr, found := self.findPRForWorktree(worktree)
 	if !found {
 		return ""
 	}
 
-	prNum := branch.PullRequestNumber.Load()
-	if prNum == 0 {
-		return ""
-	}
-
-	stateVal := branch.PullRequestState.Load()
-	state, _ := stateVal.(string)
-	urlVal := branch.PullRequestURL.Load()
-	url, _ := urlVal.(string)
-
 	var stateStr string
-	switch state {
+	switch pr.State {
 	case "MERGED":
 		stateStr = style.FgMagenta.Sprint("merged")
+	case "CLOSED":
+		stateStr = style.FgRed.Sprint("closed")
+	case "DRAFT":
+		stateStr = style.FgDefault.Sprint("draft")
 	default:
 		stateStr = style.FgGreen.Sprint("open")
 	}
 
-	return fmt.Sprintf("#%d (%s) %s", prNum, stateStr, style.FgCyan.Sprint(url))
+	return fmt.Sprintf("#%d (%s) %s", pr.Number, stateStr, style.FgCyan.Sprint(pr.Url))
 }
 
 func (self *WorktreesController) openPullRequest(worktree *models.Worktree) error {
-	branch, found := self.findBranchForWorktree(worktree)
+	pr, found := self.findPRForWorktree(worktree)
 	if !found {
 		return errors.New(self.c.Tr.NoPullRequestForBranch)
 	}
 
-	prNum := branch.PullRequestNumber.Load()
-	if prNum == 0 {
-		return errors.New(self.c.Tr.NoPullRequestForBranch)
-	}
-
-	urlVal := branch.PullRequestURL.Load()
-	url, _ := urlVal.(string)
-	if url == "" {
-		return errors.New(self.c.Tr.NoPullRequestForBranch)
-	}
-
-	return self.c.OS().OpenLink(url)
+	return self.c.OS().OpenLink(pr.Url)
 }
 
 func (self *WorktreesController) context() *context.WorktreesContext {

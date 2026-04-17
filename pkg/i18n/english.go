@@ -896,7 +896,6 @@ type TranslationSet struct {
 	Branch                                   string
 	Path                                     string
 	OpenWorktreePullRequest                  string
-	NoPullRequestForBranch                   string
 	PullRequestLabel                         string
 	MarkedBaseCommitStatus                   string
 	MarkAsBaseCommit                         string
@@ -2020,7 +2019,6 @@ func EnglishTranslationSet() *TranslationSet {
 		Branch:                                   "Branch",
 		Path:                                     "Path",
 		OpenWorktreePullRequest:                  "Open pull request in browser",
-		NoPullRequestForBranch:                   "No pull request found for this branch",
 		PullRequestLabel:                         "Pull Request",
 		MarkedBaseCommitStatus:                   "Marked a base commit for rebase",
 		MarkAsBaseCommit:                         "Mark as base commit for rebase",
