@@ -515,7 +515,9 @@ func (self *RefreshHelper) refreshBranches(refreshWorktrees bool, keepBranchSele
 				func() {
 					self.c.OnUIThread(func() error {
 						self.c.Contexts().Branches.HandleRender()
-						self.c.Contexts().Worktrees.HandleRenderToMain()
+						if self.c.Context().CurrentSide().GetKey() == context.WORKTREES_CONTEXT_KEY {
+							self.c.Contexts().Worktrees.HandleRenderToMain()
+						}
 						return nil
 					})
 				},
