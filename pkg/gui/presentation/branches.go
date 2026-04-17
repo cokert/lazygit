@@ -283,8 +283,6 @@ func pullRequestBadge(b *models.Branch) string {
 	switch state {
 	case "MERGED":
 		return style.FgMagenta.Sprint(label)
-	case "CLOSED":
-		return style.FgRed.Sprint(label)
 	default:
 		return style.FgGreen.Sprint(label)
 	}

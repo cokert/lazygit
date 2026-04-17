@@ -190,6 +190,9 @@ func (self *PullRequestLoader) SetPullRequestInfoOnBranches(
 		}
 
 		for _, pr := range prs {
+			if pr.State == "CLOSED" {
+				continue
+			}
 			existing, exists := prByBranch[pr.HeadRefName]
 			if !exists || prPriority(pr.State) > prPriority(existing.State) {
 				prByBranch[pr.HeadRefName] = pr
