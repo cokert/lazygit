@@ -133,13 +133,6 @@ func (self *BranchLoader) Load(reflogCommits []*models.Commit,
 			return b.Name == branch.Name
 		}); found {
 			branch.BehindBaseBranch.Store(oldBranch.BehindBaseBranch.Load())
-			branch.PullRequestNumber.Store(oldBranch.PullRequestNumber.Load())
-			if v := oldBranch.PullRequestState.Load(); v != nil {
-				branch.PullRequestState.Store(v)
-			}
-			if v := oldBranch.PullRequestURL.Load(); v != nil {
-				branch.PullRequestURL.Store(v)
-			}
 		}
 	}
 

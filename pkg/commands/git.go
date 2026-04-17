@@ -53,7 +53,6 @@ type Loaders struct {
 	StashLoader        *git_commands.StashLoader
 	TagLoader          *git_commands.TagLoader
 	Worktrees          *git_commands.WorktreeLoader
-	PullRequestLoader  *git_commands.PullRequestLoader
 }
 
 func NewGitCommand(
@@ -136,7 +135,6 @@ func NewGitCommandAux(
 	worktreeLoader := git_commands.NewWorktreeLoader(gitCommon)
 	stashLoader := git_commands.NewStashLoader(cmn, cmd)
 	tagLoader := git_commands.NewTagLoader(cmn, cmd)
-	pullRequestLoader := git_commands.NewPullRequestLoader(cmn, osCommand.Cmd)
 
 	return &GitCommand{
 		Blame:          blameCommands,
@@ -171,7 +169,6 @@ func NewGitCommandAux(
 			Worktrees:          worktreeLoader,
 			StashLoader:        stashLoader,
 			TagLoader:          tagLoader,
-			PullRequestLoader:  pullRequestLoader,
 		},
 		RepoPaths: repoPaths,
 	}

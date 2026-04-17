@@ -508,23 +508,6 @@ func (self *RefreshHelper) refreshBranches(refreshWorktrees bool, keepBranchSele
 		self.c.Log.Error(err)
 	}
 
-	if loadBehindCounts && self.c.UserConfig().Gui.ShowPullRequests {
-		self.c.OnWorker(func(_ gocui.Task) error {
-			return self.c.Git().Loaders.PullRequestLoader.SetPullRequestInfoOnBranches(
-				branches,
-				func() {
-					self.c.OnUIThread(func() error {
-						self.c.Contexts().Branches.HandleRender()
-						if self.c.Context().CurrentSide().GetKey() == context.WORKTREES_CONTEXT_KEY {
-							self.c.Contexts().Worktrees.HandleRenderToMain()
-						}
-						return nil
-					})
-				},
-			)
-		})
-	}
-
 	prevSelectedBranch := self.c.Contexts().Branches.GetSelected()
 
 	self.c.Model().Branches = branches
@@ -713,7 +696,6 @@ func (self *RefreshHelper) refreshRemotes() error {
 	hadPrs := len(self.c.Model().PullRequestsMap) != 0
 	self.rebuildPullRequestsMap()
 	if !hadPrs && len(self.c.Model().PullRequestsMap) != 0 {
-		// if we didn't have PRs in the map before but now we do, we need to redraw the branches view
 		self.refreshView(self.c.Contexts().Branches)
 	}
 

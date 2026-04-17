@@ -170,8 +170,6 @@ type GuiConfig struct {
 	// Whether to show the divergence from the base branch in the branches view.
 	// One of: 'none' | 'onlyArrow'  | 'arrowAndNumber'
 	ShowDivergenceFromBaseBranch string `yaml:"showDivergenceFromBaseBranch" jsonschema:"enum=none,enum=onlyArrow,enum=arrowAndNumber"`
-	// If true, show pull request status alongside branches (requires `gh` CLI to be installed and authenticated).
-	ShowPullRequests bool `yaml:"showPullRequests"`
 	// Height of the command log view
 	CommandLogSize int `yaml:"commandLogSize" jsonschema:"minimum=0"`
 	// Whether to split the main window when viewing file changes.
@@ -840,7 +838,6 @@ func GetDefaultConfig() *UserConfig {
 			CommitHashLength:                    8,
 			ShowBranchCommitHash:                false,
 			ShowDivergenceFromBaseBranch:        "none",
-			ShowPullRequests:                    true,
 			CommandLogSize:                      8,
 			SplitDiff:                           "auto",
 			SkipRewordInEditorWarning:           false,
