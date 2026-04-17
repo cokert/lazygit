@@ -186,8 +186,6 @@ func (self *WorktreesController) pullRequestLine(worktree *models.Worktree) stri
 	switch state {
 	case "MERGED":
 		stateStr = style.FgMagenta.Sprint("merged")
-	case "CLOSED":
-		stateStr = style.FgRed.Sprint("closed")
 	default:
 		stateStr = style.FgGreen.Sprint("open")
 	}
