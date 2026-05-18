@@ -859,23 +859,32 @@ func (gui *Gui) viewTabMap() map[string][]context.TabView {
 				ViewName: "reflogCommits",
 			},
 		},
-		"files": {
-			{
-				Tab:      gui.c.Tr.FilesTitle,
-				ViewName: "files",
-			},
-			context.TabView{
-				Tab:      gui.c.Tr.WorktreesTitle,
-				ViewName: "worktrees",
-			},
-			{
-				Tab:      gui.c.Tr.SubmodulesTitle,
-				ViewName: "submodules",
-			},
-		},
+		"files": gui.filesTabs(),
 	}
 
 	return result
+}
+
+func (gui *Gui) filesTabs() []context.TabView {
+	tabs := []context.TabView{
+		{
+			Tab:      gui.c.Tr.FilesTitle,
+			ViewName: "files",
+		},
+		{
+			Tab:      gui.c.Tr.WorktreesTitle,
+			ViewName: "worktrees",
+		},
+	}
+
+	if gui.c.UserConfig().Gui.ShowSubmodulesTab {
+		tabs = append(tabs, context.TabView{
+			Tab:      gui.c.Tr.SubmodulesTitle,
+			ViewName: "submodules",
+		})
+	}
+
+	return tabs
 }
 
 // Run: setup the gui with keybindings and start the mainloop

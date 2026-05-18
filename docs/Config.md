@@ -265,6 +265,9 @@ gui:
   # Length of commit hash in commits view. 0 shows '*' if NF icons aren't on.
   commitHashLength: 8
 
+  # If true, show the submodules tab in the files panel.
+  showSubmodulesTab: true
+
   # If true, show commit hashes alongside branch names in the branches view.
   showBranchCommitHash: false
 

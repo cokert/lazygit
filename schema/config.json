@@ -714,6 +714,11 @@
           "description": "Length of commit hash in commits view. 0 shows '*' if NF icons aren't on.",
           "default": 8
         },
+        "showSubmodulesTab": {
+          "type": "boolean",
+          "description": "If true, show the submodules tab in the files panel.",
+          "default": true
+        },
         "showBranchCommitHash": {
           "type": "boolean",
           "description": "If true, show commit hashes alongside branch names in the branches view.",
