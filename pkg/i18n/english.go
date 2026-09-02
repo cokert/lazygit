@@ -438,6 +438,12 @@ type TranslationSet struct {
 	CommitFilesTitle                      string
 	CheckoutCommitFileTooltip             string
 	CannotCheckoutWithModifiedFilesErr    string
+	PrevCommit                            string
+	PrevCommitTooltip                     string
+	NextCommit                            string
+	NextCommitTooltip                     string
+	CanOnlyNavigateCommitsInLocalCommits  string
+	CannotNavigateToMergeCommit           string
 	CanOnlyDiscardFromLocalCommits        string
 	CannotDiscardFromMultipleCommits      string
 	Remove                                string
@@ -1565,6 +1571,12 @@ func EnglishTranslationSet() *TranslationSet {
 		CommitFilesTitle:                     "Commit files",
 		CheckoutCommitFileTooltip:            "Checkout file. This replaces the file in your working tree with the version from the selected commit.",
 		CannotCheckoutWithModifiedFilesErr:   "You have local modifications for the file(s) you are trying to check out. You need to stash or discard these first.",
+		PrevCommit:                           "Select previous commit's files",
+		PrevCommitTooltip:                    "Select the files of this commit's parent, without leaving the commit files panel.",
+		NextCommit:                           "Select next commit's files",
+		NextCommitTooltip:                    "Select the files of this commit's child, without leaving the commit files panel.",
+		CanOnlyNavigateCommitsInLocalCommits: "Can only navigate commits when viewing the files of a local commit",
+		CannotNavigateToMergeCommit:          "Can't navigate to a merge commit's files this way, because it has more than one parent",
 		CanOnlyDiscardFromLocalCommits:       "Changes can only be discarded from local commits",
 		CannotDiscardFromMultipleCommits:     "Changes cannot be discarded from a multiselection of commits",
 		Remove:                               "Remove",

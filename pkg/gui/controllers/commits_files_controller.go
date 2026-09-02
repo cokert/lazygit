@@ -132,6 +132,20 @@ func (self *CommitFilesController) GetKeybindings(opts types.KeybindingsOpts) []
 			Tooltip:           self.c.Tr.ExpandAllTooltip,
 			GetDisabledReason: self.require(self.isInTreeMode),
 		},
+		{
+			Key:               opts.GetKey(opts.Config.CommitFiles.PrevCommit),
+			Handler:           self.prevCommit,
+			GetDisabledReason: func() *types.DisabledReason { return self.commitNavigationDisabledReason(1) },
+			Description:       self.c.Tr.PrevCommit,
+			Tooltip:           self.c.Tr.PrevCommitTooltip,
+		},
+		{
+			Key:               opts.GetKey(opts.Config.CommitFiles.NextCommit),
+			Handler:           self.nextCommit,
+			GetDisabledReason: func() *types.DisabledReason { return self.commitNavigationDisabledReason(-1) },
+			Description:       self.c.Tr.NextCommit,
+			Tooltip:           self.c.Tr.NextCommitTooltip,
+		},
 	}
 
 	return bindings
@@ -636,6 +650,75 @@ func isDescendentOfSelectedCommitFileNodes(node *filetree.CommitFileNode, select
 		}
 	}
 	return false
+}
+
+// prevCommit selects the files of the current commit's parent, staying
+// focused on the commit files panel.
+func (self *CommitFilesController) prevCommit() error {
+	return self.navigateCommit(1)
+}
+
+// nextCommit selects the files of the current commit's child, staying
+// focused on the commit files panel.
+func (self *CommitFilesController) nextCommit() error {
+	return self.navigateCommit(-1)
+}
+
+// navigateCommit moves the local commits selection by `change` (in list
+// order, so +1 is the parent/older commit and -1 is the child/newer commit)
+// and re-syncs the commit files panel to match, without leaving the panel.
+func (self *CommitFilesController) navigateCommit(change int) error {
+	localCommits := self.c.Contexts().LocalCommits
+
+	localCommits.MoveSelectedLine(change)
+	self.c.PostRefreshUpdate(localCommits)
+
+	ref := localCommits.GetSelectedRef()
+	refRange := localCommits.GetSelectedRefRangeForDiffFiles()
+
+	canRebase := localCommits.CanRebase()
+	if canRebase {
+		if self.c.Modes().Diffing.Active() {
+			if self.c.Modes().Diffing.Ref != ref.RefName() {
+				canRebase = false
+			}
+		} else if refRange != nil {
+			canRebase = false
+		}
+	}
+
+	commitFilesContext := self.context()
+	commitFilesContext.ClearFilter()
+	commitFilesContext.ReInit(ref, refRange)
+	commitFilesContext.SetSelection(0)
+	commitFilesContext.SetCanRebase(canRebase)
+
+	self.c.Refresh(types.RefreshOptions{
+		Scope: []types.RefreshableView{types.COMMIT_FILES},
+	})
+
+	return nil
+}
+
+// commitNavigationDisabledReason reports why navigating by `change` (see
+// navigateCommit) isn't currently possible, or nil if it is.
+func (self *CommitFilesController) commitNavigationDisabledReason(change int) *types.DisabledReason {
+	parentContext := self.context().GetParentContext()
+	if parentContext == nil || parentContext.GetKey() != context.LOCAL_COMMITS_CONTEXT_KEY {
+		return &types.DisabledReason{Text: self.c.Tr.CanOnlyNavigateCommitsInLocalCommits}
+	}
+
+	localCommits := self.c.Contexts().LocalCommits
+	targetIdx := lo.Clamp(localCommits.GetSelectedLineIdx()+change, 0, localCommits.Len()-1)
+	if targetIdx == localCommits.GetSelectedLineIdx() {
+		return nil
+	}
+
+	if localCommits.GetItems()[targetIdx].IsMerge() {
+		return &types.DisabledReason{Text: self.c.Tr.CannotNavigateToMergeCommit}
+	}
+
+	return nil
 }
 
 func (self *CommitFilesController) isInTreeMode() *types.DisabledReason {

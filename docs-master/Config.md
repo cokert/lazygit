@@ -795,6 +795,14 @@ keybinding:
     renameStash: r
   commitFiles:
     checkoutCommitFile: c
+
+    # Select the files of the previous commit (i.e. this commit's parent), without
+    # leaving the commit files panel
+    prevCommit: J
+
+    # Select the files of the next commit (i.e. this commit's child), without
+    # leaving the commit files panel
+    nextCommit: K
   main:
     toggleSelectHunk: a
     pickBothHunks: b

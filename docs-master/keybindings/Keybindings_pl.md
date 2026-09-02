@@ -279,6 +279,8 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
 | `` ` `` | Przełącz widok drzewa plików | Toggle file view between flat and tree layout. Flat layout shows all file paths in a single list, tree layout groups files by directory.<br><br>The default can be changed in the config file with the key 'gui.showFileTree'. |
 | `` - `` | Collapse all files | Collapse all directories in the files tree |
 | `` = `` | Expand all files | Expand all directories in the file tree |
+| `` J `` | Select previous commit's files | Select the files of this commit's parent, without leaving the commit files panel. |
+| `` K `` | Select next commit's files | Select the files of this commit's child, without leaving the commit files panel. |
 | `` 0 `` | Focus main view |  |
 | `` / `` | Filtruj bieżący widok po tekście |  |
 
