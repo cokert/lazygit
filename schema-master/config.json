@@ -1708,6 +1708,36 @@
             }
           ],
           "default": "c"
+        },
+        "prevCommit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Select the files of the previous commit (i.e. this commit's parent), without leaving the commit files panel",
+          "default": "J"
+        },
+        "nextCommit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Select the files of the next commit (i.e. this commit's child), without leaving the commit files panel",
+          "default": "K"
         }
       },
       "additionalProperties": false,

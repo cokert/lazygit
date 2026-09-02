@@ -214,6 +214,8 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
 | `` ` `` | 顯示檔案樹狀視圖 | 在平面佈局和樹佈局之間切換檔案檢視。平面佈局在單個列表中顯示所有檔案路徑，樹佈局按目錄分組檔案。<br><br>可以在設定檔中使用 'gui.showFileTree' 鍵更改預設設定。 |
 | `` - `` | 摺疊全部檔案 | 摺疊檔案樹中的全部目錄 |
 | `` = `` | 展開全部檔案 | 展開檔案樹中的全部目錄 |
+| `` J `` | Select previous commit's files | Select the files of this commit's parent, without leaving the commit files panel. |
+| `` K `` | Select next commit's files | Select the files of this commit's child, without leaving the commit files panel. |
 | `` 0 `` | 聚焦主檢視 |  |
 | `` / `` | 搜尋 |  |
 

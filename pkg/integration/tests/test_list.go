@@ -148,6 +148,7 @@ var tests = []*components.IntegrationTest{
 	commit.HistoryComplex,
 	commit.KeepClickedCommitSelectedAfterFocusIn,
 	commit.KeepSelectedCommitAfterExternalCommit,
+	commit.NavigateCommitFiles,
 	commit.NewBranch,
 	commit.PasteCommitMessage,
 	commit.PasteCommitMessageOverExisting,

@@ -674,6 +674,10 @@ type KeybindingStashConfig struct {
 
 type KeybindingCommitFilesConfig struct {
 	CheckoutCommitFile Keybinding `yaml:"checkoutCommitFile"`
+	// Select the files of the previous commit (i.e. this commit's parent), without leaving the commit files panel
+	PrevCommit Keybinding `yaml:"prevCommit"`
+	// Select the files of the next commit (i.e. this commit's child), without leaving the commit files panel
+	NextCommit Keybinding `yaml:"nextCommit"`
 }
 
 type KeybindingMainConfig struct {
@@ -1189,6 +1193,8 @@ func GetDefaultConfigForPlatform(platform string) *UserConfig {
 			},
 			CommitFiles: KeybindingCommitFilesConfig{
 				CheckoutCommitFile: Keybinding{"c"},
+				PrevCommit:         Keybinding{"J"},
+				NextCommit:         Keybinding{"K"},
 			},
 			Main: KeybindingMainConfig{
 				PrevHunk:         Keybinding{"<left>", "h"},
