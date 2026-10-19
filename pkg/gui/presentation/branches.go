@@ -195,13 +195,23 @@ func getBranchDisplayStrings(
 
 // GetBranchTextStyle branch color
 func GetBranchTextStyle(name string) style.TextStyle {
-	for _, p := range branchColorPatterns {
-		if matched, _ := regexp.MatchString(p.pattern, name); matched {
-			return p.style
-		}
+	if textStyle, ok := matchBranchColorPattern(name); ok {
+		return textStyle
 	}
 
 	return theme.DefaultTextColor
+}
+
+// matchBranchColorPattern returns the style of the first configured branch
+// color pattern that matches the given branch name, if there is one.
+func matchBranchColorPattern(name string) (style.TextStyle, bool) {
+	for _, p := range branchColorPatterns {
+		if matched, _ := regexp.MatchString(p.pattern, name); matched {
+			return p.style, true
+		}
+	}
+
+	return style.TextStyle{}, false
 }
 
 func BranchStatus(
