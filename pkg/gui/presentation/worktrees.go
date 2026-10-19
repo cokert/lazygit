@@ -47,7 +47,11 @@ func GetWorktreeDisplayString(tr *i18n.TranslationSet, worktree *models.Worktree
 	res = append(res, textStyle.Sprint(name))
 	var branch string
 	if worktree.Branch != "" {
-		branch = style.FgCyan.Sprint(worktree.Branch)
+		branchStyle := style.FgCyan
+		if textStyle, ok := matchBranchColorPattern(worktree.Branch); ok {
+			branchStyle = textStyle
+		}
+		branch = branchStyle.Sprint(worktree.Branch)
 	} else if worktree.Head != "" {
 		branch = style.FgYellow.Sprint(utils.ResolvePlaceholderString(
 			tr.HeadDetachedAt, map[string]string{"hash": utils.ShortHash(worktree.Head)}))

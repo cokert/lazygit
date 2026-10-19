@@ -5,7 +5,10 @@ import (
 
 	"github.com/gookit/color"
 	"github.com/jesseduffield/lazygit/pkg/commands/models"
+	"github.com/jesseduffield/lazygit/pkg/config"
+	"github.com/jesseduffield/lazygit/pkg/gui/style"
 	"github.com/jesseduffield/lazygit/pkg/i18n"
+	"github.com/jesseduffield/lazygit/pkg/theme"
 	"github.com/stretchr/testify/assert"
 	"github.com/xo/terminfo"
 )
@@ -107,6 +110,47 @@ func Test_GetWorktreeDisplayString(t *testing.T) {
 		t.Run(s.testName, func(t *testing.T) {
 			result := GetWorktreeDisplayString(tr, s.worktree)
 			assert.Equal(t, s.expected, result)
+		})
+	}
+}
+
+func Test_GetWorktreeDisplayString_branchColorPatterns(t *testing.T) {
+	tr := &i18n.TranslationSet{
+		MainWorktree:    "(main worktree)",
+		MissingWorktree: "(missing)",
+		HeadDetachedAt:  "HEAD detached at {{.hash}}",
+	}
+
+	oldColorLevel := color.ForceSetColorLevel(terminfo.ColorLevelMillions)
+	defer color.ForceSetColorLevel(oldColorLevel)
+
+	SetCustomBranches(config.ColorPatterns{
+		{Pattern: "^feature/", Color: "green"},
+	})
+	defer SetCustomBranches(nil)
+
+	scenarios := []struct {
+		testName       string
+		worktree       *models.Worktree
+		expectedBranch string
+	}{
+		{
+			testName:       "Branch matching a pattern is colored with it",
+			worktree:       &models.Worktree{Name: "my-worktree", Branch: "feature/foo"},
+			expectedBranch: style.FgGreen.Sprint("feature/foo"),
+		},
+		{
+			testName:       "Branch matching no pattern keeps the default color",
+			worktree:       &models.Worktree{Name: "my-worktree", Branch: "main"},
+			expectedBranch: style.FgCyan.Sprint("main"),
+		},
+	}
+
+	for _, s := range scenarios {
+		t.Run(s.testName, func(t *testing.T) {
+			result := GetWorktreeDisplayString(tr, s.worktree)
+			assert.Equal(t, theme.DefaultTextColor.Sprint(s.worktree.Name), result[1])
+			assert.Equal(t, s.expectedBranch, result[2])
 		})
 	}
 }
