@@ -366,6 +366,36 @@ func TestUserConfigValidate_spinnerFrames(t *testing.T) {
 	}
 }
 
+func TestUserConfigValidate_terminalTitle(t *testing.T) {
+	scenarios := []struct {
+		name          string
+		terminalTitle string
+		valid         bool
+	}{
+		{name: "empty", terminalTitle: "", valid: true},
+		{name: "plain text", terminalTitle: "lazygit", valid: true},
+		{name: "all fields", terminalTitle: "{{.RepoName}} {{.BranchName}} {{.WorktreeName}}", valid: true},
+		{name: "conditional", terminalTitle: "{{if .WorktreeName}}{{.WorktreeName}}{{end}}", valid: true},
+		{name: "syntax error", terminalTitle: "{{.RepoName", valid: false},
+		{name: "unknown field", terminalTitle: "{{.Nope}}", valid: false},
+		{name: "old placeholder syntax", terminalTitle: "{{repoName}}", valid: false},
+	}
+
+	for _, s := range scenarios {
+		t.Run(s.name, func(t *testing.T) {
+			config := GetDefaultConfig()
+			config.Gui.TerminalTitle = s.terminalTitle
+			err := config.Validate()
+
+			if s.valid {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+			}
+		})
+	}
+}
+
 func TestUserConfigValidate_sidePanels(t *testing.T) {
 	scenarios := []struct {
 		name   string

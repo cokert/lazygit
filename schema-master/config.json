@@ -1365,8 +1365,8 @@
         },
         "terminalTitle": {
           "type": "string",
-          "description": "Format string for the terminal window title. Supports placeholders:\n- {{repoName}}: Name of the current repository\nSet to empty string to disable terminal title updates.",
-          "default": "lazygit::{{repoName}}"
+          "description": "Template for the terminal window title. Set to an empty string to leave the title alone.\nAvailable fields: `{{.RepoName}}`, `{{.BranchName}}` and `{{.WorktreeName}}` (empty unless you are in a linked worktree).\nFor example, \"{{.RepoName}} ({{.BranchName}})\".\nUse `{{if .WorktreeName}}...{{end}}` to show something only in a linked worktree.",
+          "default": "lazygit [{{.RepoName}}]"
         }
       },
       "additionalProperties": false,

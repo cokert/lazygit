@@ -36,10 +36,6 @@ func getUserShell() string {
 	return "bash"
 }
 
-func (c *OSCommand) UpdateWindowTitle() error {
-	return nil
-}
-
 // setRawCmdLine is the non-Windows no-op counterpart of the Windows shim
 // (see the comment there). NewShell's shell-building logic is portable, so
 // this call is reached on every host; only the Windows build does anything.

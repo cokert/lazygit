@@ -1695,7 +1695,30 @@ func (self *RefreshHelper) refreshStatus(env refreshEnv) {
 
 		status := presentation.FormatStatus(repoName, currentBranch, types.ItemOperationNone, linkedWorktreeName, workingTreeState, self.c.Tr, self.c.UserConfig())
 		self.c.SetViewContent(self.c.Views().Status, status)
+
+		self.updateTerminalTitle(config.TerminalTitleData{
+			RepoName:     repoName,
+			BranchName:   currentBranch.Name,
+			WorktreeName: linkedWorktreeName,
+		})
 	})
+}
+
+func (self *RefreshHelper) updateTerminalTitle(data config.TerminalTitleData) {
+	titleFormat := self.c.UserConfig().Gui.TerminalTitle
+	if titleFormat == "" {
+		return
+	}
+
+	title, err := presentation.FormatTerminalTitle(titleFormat, data)
+	if err != nil {
+		self.c.Log.Warnf("Failed to format the terminal title: %v", err)
+		return
+	}
+
+	if gocui.Screen != nil {
+		gocui.Screen.SetTitle(title)
+	}
 }
 
 // refForLog returns the ref to log commits from, along with the bisect info it

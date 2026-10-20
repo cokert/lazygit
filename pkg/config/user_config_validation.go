@@ -69,6 +69,16 @@ func (config *UserConfig) Validate() error {
 	if err := validateSidePanels(config.Gui.SidePanels); err != nil {
 		return err
 	}
+	if err := validateTerminalTitle(config.Gui.TerminalTitle); err != nil {
+		return err
+	}
+	return nil
+}
+
+func validateTerminalTitle(terminalTitle string) error {
+	if _, err := utils.ResolveTemplate(terminalTitle, TerminalTitleData{}, nil); err != nil {
+		return fmt.Errorf("gui.terminalTitle: %w", err)
+	}
 	return nil
 }
 

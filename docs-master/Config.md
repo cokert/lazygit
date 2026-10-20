@@ -397,10 +397,14 @@ gui:
   # is already active, go to next tab instead
   switchTabsWithPanelJumpKeys: false
 
-  # Format string for the terminal window title. Supports placeholders:
-  # - {{repoName}}: Name of the current repository
-  # Set to empty string to disable terminal title updates.
-  terminalTitle: lazygit::{{repoName}}
+  # Template for the terminal window title. Set to an empty string to leave the
+  # title alone.
+  # Available fields: `{{.RepoName}}`, `{{.BranchName}}` and `{{.WorktreeName}}`
+  # (empty unless you are in a linked worktree).
+  # For example, "{{.RepoName}} ({{.BranchName}})".
+  # Use `{{if .WorktreeName}}...{{end}}` to show something only in a linked
+  # worktree.
+  terminalTitle: lazygit [{{.RepoName}}]
 
 # Config relating to git
 git:
