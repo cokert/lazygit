@@ -529,6 +529,13 @@
           "type": "integer",
           "description": "When copying commit hashes to the clipboard, truncate them to this length. Set to 40 to disable truncation.",
           "default": 12
+        },
+        "mainWorktreeDirNames": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Names of directories that hold a repo's main worktree inside a directory of the repo's own, as in `~/dev/myrepo/main` with linked worktrees such as `~/dev/myrepo/feature-x` next to it. A repo whose main worktree has one of these names is named after the directory around it (`myrepo`) instead of after the worktree (`main`)."
         }
       },
       "additionalProperties": false,

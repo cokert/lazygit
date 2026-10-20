@@ -106,3 +106,42 @@ func TestReadHeadInfo(t *testing.T) {
 		})
 	}
 }
+
+func TestNewRecentRepoEntry(t *testing.T) {
+	scenarios := []struct {
+		testName             string
+		path                 string
+		mainWorktreeDirNames []string
+		expectedName         string
+		expectedDir          string
+	}{
+		{
+			testName:     "Repo directory with no names configured",
+			path:         "/home/me/dev/myrepo/main",
+			expectedName: "main",
+			expectedDir:  "/home/me/dev/myrepo",
+		},
+		{
+			testName:             "Main worktree directory of a repo",
+			path:                 "/home/me/dev/myrepo/main",
+			mainWorktreeDirNames: []string{"main"},
+			expectedName:         "myrepo",
+			expectedDir:          "/home/me/dev",
+		},
+		{
+			testName:             "Linked worktree directory keeps its own name",
+			path:                 "/home/me/dev/myrepo/feature-x",
+			mainWorktreeDirNames: []string{"main"},
+			expectedName:         "feature-x",
+			expectedDir:          "/home/me/dev/myrepo",
+		},
+	}
+
+	for _, s := range scenarios {
+		t.Run(s.testName, func(t *testing.T) {
+			entry := newRecentRepoEntry(filepath.FromSlash(s.path), "master", s.mainWorktreeDirNames)
+			assert.Equal(t, s.expectedName, entry.nameColumn)
+			assert.Equal(t, filepath.FromSlash(s.expectedDir), entry.dirColumn)
+		})
+	}
+}

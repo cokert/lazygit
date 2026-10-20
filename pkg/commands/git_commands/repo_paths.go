@@ -3,6 +3,7 @@ package git_commands
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/go-errors/errors"
@@ -109,12 +110,37 @@ func MockRepoPaths(currentPath string) *RepoPaths {
 func GetRepoPaths(
 	cmd oscommands.ICmdObjBuilder,
 	version *GitVersion,
+	mainWorktreeDirNames []string,
 ) (*RepoPaths, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
-	return GetRepoPathsForDir(cwd, cmd)
+	repoPaths, err := GetRepoPathsForDir(cwd, cmd)
+	if err != nil {
+		return repoPaths, err
+	}
+	repoPaths.repoName = filepath.Base(RepoDisplayPath(repoPaths.repoPath, mainWorktreeDirNames))
+	return repoPaths, nil
+}
+
+// RepoDisplayPath returns the path whose last segment names the repo at
+// repoPath. That is repoPath itself, unless its last segment is one of
+// mainWorktreeDirNames: a main worktree that lives in a directory like that
+// inside a directory of the repo's own (~/dev/myrepo/main, with linked
+// worktrees such as ~/dev/myrepo/feature-x next to it) is named after the
+// directory around it.
+func RepoDisplayPath(repoPath string, mainWorktreeDirNames []string) string {
+	if !slices.Contains(mainWorktreeDirNames, filepath.Base(repoPath)) {
+		return repoPath
+	}
+
+	parent := filepath.Dir(repoPath)
+	if filepath.Dir(parent) == parent {
+		// There is nothing around the main worktree but the root.
+		return repoPath
+	}
+	return parent
 }
 
 func GetRepoPathsForDir(

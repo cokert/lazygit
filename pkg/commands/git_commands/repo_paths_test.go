@@ -358,3 +358,55 @@ func TestMissingDir(t *testing.T) {
 		})
 	}
 }
+
+func TestRepoDisplayPath(t *testing.T) {
+	scenarios := []struct {
+		testName             string
+		repoPath             string
+		mainWorktreeDirNames []string
+		expected             string
+	}{
+		{
+			testName:             "No names configured",
+			repoPath:             "/home/me/dev/myrepo/main",
+			mainWorktreeDirNames: nil,
+			expected:             "/home/me/dev/myrepo/main",
+		},
+		{
+			testName:             "Repo directory is not one of the names",
+			repoPath:             "/home/me/dev/myrepo",
+			mainWorktreeDirNames: []string{"main", "master"},
+			expected:             "/home/me/dev/myrepo",
+		},
+		{
+			testName:             "Repo directory is one of the names",
+			repoPath:             "/home/me/dev/myrepo/main",
+			mainWorktreeDirNames: []string{"main", "master"},
+			expected:             "/home/me/dev/myrepo",
+		},
+		{
+			testName:             "Repo directory is another one of the names",
+			repoPath:             "/home/me/dev/myrepo/master",
+			mainWorktreeDirNames: []string{"main", "master"},
+			expected:             "/home/me/dev/myrepo",
+		},
+		{
+			testName:             "Only an exact match counts",
+			repoPath:             "/home/me/dev/myrepo/main-old",
+			mainWorktreeDirNames: []string{"main"},
+			expected:             "/home/me/dev/myrepo/main-old",
+		},
+		{
+			testName:             "Nothing around the repo directory but the root",
+			repoPath:             "/main",
+			mainWorktreeDirNames: []string{"main"},
+			expected:             "/main",
+		},
+	}
+
+	for _, s := range scenarios {
+		t.Run(s.testName, func(t *testing.T) {
+			assert.Equal(t, filepath.FromSlash(s.expected), RepoDisplayPath(filepath.FromSlash(s.repoPath), s.mainWorktreeDirNames))
+		})
+	}
+}

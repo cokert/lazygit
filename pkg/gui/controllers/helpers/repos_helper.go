@@ -166,22 +166,24 @@ type recentRepoEntry struct {
 	dirColumn    string
 }
 
-func newRecentRepoEntry(path string, branchName string) recentRepoEntry {
+func newRecentRepoEntry(path string, branchName string, mainWorktreeDirNames []string) recentRepoEntry {
 	// The icon is part of the column, so it counts towards the column's width.
 	branchColumn := branchName
 	if icons.IsIconEnabled() {
 		branchColumn = icons.BRANCH_ICON + " " + branchName
 	}
 
+	displayPath := git_commands.RepoDisplayPath(path, mainWorktreeDirNames)
+
 	return recentRepoEntry{
 		path:         path,
 		branchName:   branchName,
-		nameColumn:   filepath.Base(path),
+		nameColumn:   filepath.Base(displayPath),
 		branchColumn: branchColumn,
 		// The last segment of the path is already in the first column, so the
 		// directory that contains the repo is enough to tell repos with the
 		// same name apart.
-		dirColumn: utils.ContractTilde(filepath.Dir(path)),
+		dirColumn: utils.ContractTilde(filepath.Dir(displayPath)),
 	}
 }
 
@@ -302,7 +304,7 @@ func (self *ReposHelper) CreateRecentReposMenu() error {
 	wg.Wait()
 
 	entries := lo.Map(recentRepoPaths, func(path string, i int) recentRepoEntry {
-		return newRecentRepoEntry(path, currentBranches[i])
+		return newRecentRepoEntry(path, currentBranches[i], self.c.UserConfig().Git.MainWorktreeDirNames)
 	})
 
 	columnWidths := self.fitRecentRepoColumns(entries)

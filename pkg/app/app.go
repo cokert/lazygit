@@ -118,7 +118,7 @@ func NewApp(config config.AppConfigurer, test integrationTypes.IntegrationTest, 
 
 	// If we're not in a repo, GetRepoPaths will return an error. The error is moot for us
 	// at this stage, since we'll try to init a new repo in setupRepo(), below
-	repoPaths, err := git_commands.GetRepoPaths(app.OSCommand.Cmd, gitVersion)
+	repoPaths, err := git_commands.GetRepoPaths(app.OSCommand.Cmd, gitVersion, common.UserConfig().Git.MainWorktreeDirNames)
 	if err != nil {
 		common.Log.Infof("Error getting repo paths: %v", err)
 	}

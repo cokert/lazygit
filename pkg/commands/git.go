@@ -63,7 +63,7 @@ func NewGitCommand(
 	gitConfig git_config.IGitConfig,
 	diffRendererConfigManager *config.DiffRendererConfigManager,
 ) (*GitCommand, error) {
-	repoPaths, err := git_commands.GetRepoPaths(osCommand.Cmd, version)
+	repoPaths, err := git_commands.GetRepoPaths(osCommand.Cmd, version, cmn.UserConfig().Git.MainWorktreeDirNames)
 	if err != nil {
 		return nil, errors.Errorf("Error getting repo paths: %v", err)
 	}

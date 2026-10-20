@@ -376,6 +376,8 @@ type GitConfig struct {
 	RemoteBranchSortOrder string `yaml:"remoteBranchSortOrder" jsonschema:"enum=date,enum=alphabetical"`
 	// When copying commit hashes to the clipboard, truncate them to this length. Set to 40 to disable truncation.
 	TruncateCopiedCommitHashesTo int `yaml:"truncateCopiedCommitHashesTo"`
+	// Names of directories that hold a repo's main worktree inside a directory of the repo's own, as in `~/dev/myrepo/main` with linked worktrees such as `~/dev/myrepo/feature-x` next to it. A repo whose main worktree has one of these names is named after the directory around it (`myrepo`) instead of after the worktree (`main`).
+	MainWorktreeDirNames []string `yaml:"mainWorktreeDirNames"`
 }
 
 type DiffRendererCommandType string
@@ -981,6 +983,7 @@ func GetDefaultConfigForPlatform(platform string) *UserConfig {
 			RemoteBranchSortOrder:        "date",
 			SkipHookPrefix:               "WIP",
 			MainBranches:                 []string{"master", "main"},
+			MainWorktreeDirNames:         []string{},
 			AutoFetch:                    true,
 			AutoRefresh:                  true,
 			AutoDetectExternalChanges:    true,

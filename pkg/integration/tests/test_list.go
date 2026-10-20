@@ -574,6 +574,7 @@ var tests = []*components.IntegrationTest{
 	status.ClickWorkingTreeStateToOpenRebaseOptionsMenu,
 	status.LogCmd,
 	status.LogCmdStatusPanelAllBranchesLog,
+	status.RepoNameFromParentDir,
 	submodule.Add,
 	submodule.DiscardRemovedSubmodule,
 	submodule.Enter,

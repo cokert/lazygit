@@ -574,6 +574,13 @@ git:
   # to 40 to disable truncation.
   truncateCopiedCommitHashesTo: 12
 
+  # Names of directories that hold a repo's main worktree inside a directory of
+  # the repo's own, as in `~/dev/myrepo/main` with linked worktrees such as
+  # `~/dev/myrepo/feature-x` next to it. A repo whose main worktree has one of
+  # these names is named after the directory around it (`myrepo`) instead of after
+  # the worktree (`main`).
+  mainWorktreeDirNames: []
+
 # Config relating to git worktrees
 worktree:
   # Default parent directory for new worktrees. It is offered as a candidate
